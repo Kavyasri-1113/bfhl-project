@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BFHL API Visualizer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 8px;
+      max-height: 200px;
+      overflow: auto;
+      font-size: 13px;
+    }
+
+    .label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>BFHL API Tester</h2>
+
+  <div class="label">Enter Nodes:</div>
+  <textarea id="input" rows="4">A->B, A->C, B->D</textarea>
+
+  <button onclick="sendData()">Submit</button>
+
+  <div class="label">Response:</div>
+  <pre id="output">Click Submit to see result</pre>
+</div>
+
+<script>
+async function sendData() {
+  let raw = document.getElementById("input").value;
+  let data = raw.split(",").map(x => x.trim());
+
+  try {
+    let res = await fetch("http://localhost:3000/bfhl", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ data })
+    });
+
+    let result = await res.json();
+
+    document.getElementById("output").textContent =
+      JSON.stringify(result, null, 2);
+
+  } catch (err) {
+    document.getElementById("output").textContent =
+      "❌ Error: Could not connect to API";
+  }
+}
+</script>
+
+</body>
+</html>
